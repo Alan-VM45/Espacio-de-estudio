@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Espacio de Estudio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+
+    <header
+        class="max-w-7xl mx-auto p-6 flex flex-col md:flex-row justify-between items-center gap-6 border-b border-slate-800/50">
+        <div class="flex items-center gap-4">
+            <div class="bg-indigo-600 p-2 rounded-lg shadow-lg shadow-indigo-500/20">
+                <i class="fas fa-terminal text-white"></i>
+            </div>
+            <h1
+                class="text-2xl font-bold bg-gradient-to-r from-indigo-400 to-emerald-400 bg-clip-text text-transparent">
+                Espacio de Estudio <span class="text-slate-500 font-light text-sm italic">AI Lab Edition</span>
+            </h1>
+            <button onclick="toggleSettings(true)" class="text-slate-500 hover:text-indigo-400 transition ml-2">
+                <i class="fas fa-cog"></i>
+            </button>
+        </div>
+        <nav class="flex bg-slate-900/50 p-1 rounded-xl border border-slate-800">
+            <button onclick="switchTab('overview')" id="btn-overview"
+                class="tab-btn px-5 py-2 rounded-lg text-sm font-medium transition bg-indigo-600 text-white">Panel</button>
+            <button onclick="switchTab('subjects')" id="btn-subjects"
+                class="tab-btn px-5 py-2 rounded-lg text-sm font-medium transition text-slate-400">Materias</button>
+            <button onclick="switchTab('focus')" id="btn-focus"
+                class="tab-btn px-5 py-2 rounded-lg text-sm font-medium transition text-slate-400">Enfoque</button>
+        </nav>
+    </header>
+
+    <main class="max-w-7xl mx-auto p-6">
+
+        <!-- PANEL DE INICIO -->
+        <div id="tab-overview" class="tab-content animate-in">
+            <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+                <div class="lg:col-span-3">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-xl font-semibold text-slate-300">Mis Cursadas</h2>
+                        <button onclick="toggleModal(true)"
+                            class="bg-indigo-600 hover:bg-indigo-500 px-4 py-2 rounded-lg text-sm font-bold transition shadow-lg shadow-indigo-600/20">
+                            + Nueva Materia
+                        </button>
+                    </div>
+                    <div id="subjects-grid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6"></div>
+                </div>
+
+                <div class="space-y-6">
+                    <div class="glass border border-slate-800 p-6 rounded-3xl">
+                        <h3
+                            class="text-xs font-bold text-slate-500 uppercase tracking-widest mb-4 flex items-center gap-2">
+                            <i class="fas fa-file-pdf text-red-400"></i> Vault Reciente
+                        </h3>
+                        <div class="space-y-2" id="recent-docs">
+                            <p class="text-[10px] text-slate-600 italic text-center py-4">Sin archivos</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- EXPLORADOR DE MATERIAS -->
+        <div id="tab-subjects" class="tab-content hidden animate-in">
+            <div class="flex flex-col lg:flex-row gap-8">
+                <!-- Sidebar -->
+                <div id="subjects-sidebar" class="w-full lg:w-64 space-y-2"></div>
+
+                <!-- Main Content Area -->
+                <div class="flex-1 space-y-8">
+                    <!-- Detalle de Materia (Prompts y Roadmaps) -->
+                    <div id="subject-detail"
+                        class="bg-slate-900/40 border border-slate-800 rounded-3xl p-6 md:p-8 min-h-[300px]">
+                        <div class="text-center py-20 opacity-30">
+                            <p>Selecciona una materia para ver tus prompts y roadmaps</p>
+                        </div>
+                    </div>
+
+                    <!-- LABORATORIO DE APUNTES (CORRECCIÓN IA) -->
+                    <div id="ai-notes-lab"
+                        class="bg-slate-900/40 border border-slate-800 rounded-3xl p-6 md:p-8 hidden animate-in">
+                        <div class="flex justify-between items-center mb-6 border-b border-slate-800 pb-4">
+                            <h3 class="text-xl font-bold flex items-center gap-2 text-emerald-400">
+                                <i class="fas fa-microscope"></i> Laboratorio de Apuntes
+                            </h3>
+                            <span class="text-[10px] font-mono text-slate-500">CORRECCIÓN EN TIEMPO REAL</span>
+                        </div>
+
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                            <div>
+                                <label class="text-[10px] font-bold text-slate-500 uppercase mb-2 block">Tus Notas /
+                                    Explicación del tema</label>
+                                <textarea id="notes-area"
+                                    class="w-full h-64 bg-slate-950 border border-slate-800 rounded-2xl p-4 text-sm text-slate-300 outline-none focus:border-emerald-500 transition resize-none"
+                                    placeholder="Escribe aquí lo que entendiste sobre el tema..."></textarea>
+                                <button onclick="reviewNotes()" id="review-btn"
+                                    class="mt-4 w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 rounded-xl transition flex items-center justify-center gap-2 shadow-lg shadow-emerald-900/20">
+                                    <i class="fas fa-magic"></i> Corregir con IA
+                                </button>
+                            </div>
+                            <div class="bg-slate-950 border border-slate-800 rounded-2xl p-6 overflow-y-auto h-auto min-h-[300px]"
+                                id="ai-review-result">
+                                <div class="text-center py-20 text-slate-700 italic text-sm">
+                                    Escribe tus apuntes y haz clic en corregir para recibir feedback.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Bóveda de Archivos (Subida de Apuntes) -->
+                    <div id="subject-files"
+                        class="bg-slate-900/40 border border-slate-800 rounded-3xl p-6 md:p-8 hidden">
+                        <div class="flex justify-between items-center mb-6 border-b border-slate-800 pb-4">
+                            <h3 class="text-xl font-bold flex items-center gap-2">
+                                <i class="fas fa-folder-open text-amber-500"></i> Bóveda de Apuntes
+                            </h3>
+                            <label
+                                class="bg-indigo-600 hover:bg-indigo-500 px-4 py-2 rounded-xl text-xs font-bold cursor-pointer transition flex items-center gap-2 shadow-lg shadow-indigo-600/10">
+                                <i class="fas fa-upload"></i> Subir Documento
+                                <input type="file" id="file-upload" class="hidden"
+                                    accept="application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,image/*"
+                                    onchange="handleFileUpload(event)">
+                            </label>
+                        </div>
+
+                        <div id="files-list" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4 mb-6"></div>
+
+                        <div id="pdf-viewer" class="hidden animate-in pt-4 border-t border-slate-800">
+                            <div class="flex justify-between items-center mb-3">
+                                <span id="viewing-filename"
+                                    class="text-xs font-mono text-indigo-400 truncate pr-4">archivo.pdf</span>
+                                <button onclick="closeViewer()" class="text-slate-500 hover:text-white transition"><i
+                                        class="fas fa-times"></i> Cerrar Visor</button>
+                            </div>
+                            <div class="pdf-viewer-container" id="viewer-container"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MODO ENFOQUE -->
+        <div id="tab-focus" class="tab-content hidden animate-in text-center max-w-2xl mx-auto py-10">
+            <div id="timer-display"
+                class="glass border-2 border-slate-800 p-12 rounded-[40px] mb-8 transition-all duration-500">
+                <span id="timer-subject"
+                    class="text-xs font-bold text-indigo-400 uppercase tracking-widest block mb-4">Deep Work
+                    Session</span>
+                <h2 class="text-8xl font-black mono mb-6" id="time-left">25:00</h2>
+                <div class="flex justify-center gap-4">
+                    <button id="timer-toggle" onclick="toggleTimer()"
+                        class="bg-indigo-600 w-16 h-16 rounded-full flex items-center justify-center hover:bg-indigo-500 transition shadow-lg">
+                        <i class="fas fa-play text-xl" id="timer-icon"></i>
+                    </button>
+                    <button onclick="resetTimer()"
+                        class="bg-slate-800 w-16 h-16 rounded-full flex items-center justify-center hover:bg-slate-700 transition">
+                        <i class="fas fa-redo"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-3" id="timer-subject-selector"></div>
+        </div>
+    </main>
+
+    <!-- MODAL AGREGAR MATERIA -->
+    <div id="modal-subject"
+        class="fixed inset-0 bg-slate-950/90 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
+        <div class="bg-slate-900 border border-slate-800 p-8 rounded-3xl w-full max-w-md shadow-2xl">
+            <h3 class="text-xl font-bold mb-6 text-indigo-400">Configurar Materia</h3>
+            <div class="space-y-5">
+                <input type="text" id="subject-name"
+                    class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 outline-none focus:border-indigo-500 transition"
+                    placeholder="Nombre de la materia">
+                <select id="subject-type"
+                    class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 outline-none focus:border-indigo-500 transition">
+                    <option value="math">Matemática / Estadística</option>
+                    <option value="prog">Programación / Algoritmos</option>
+                    <option value="db">Bases de Datos</option>
+                    <option value="design">Análisis y Diseño</option>
+                </select>
+                <div class="flex gap-3 pt-4">
+                    <button onclick="toggleModal(false)"
+                        class="flex-1 py-3 text-slate-500 font-bold hover:text-white transition">Cancelar</button>
+                    <button onclick="saveSubject()"
+                        class="flex-1 py-3 bg-indigo-600 rounded-xl font-bold hover:bg-indigo-500 transition shadow-lg">Guardar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL CONFIGURACIÓN API KEY -->
+    <div id="modal-settings"
+        class="fixed inset-0 bg-slate-950/90 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
+        <div class="bg-slate-900 border border-slate-800 p-8 rounded-3xl w-full max-w-md shadow-2xl">
+            <h3 class="text-xl font-bold mb-2 text-indigo-400">Ajustes de IA</h3>
+            <p class="text-xs text-slate-500 mb-6">Configura tu clave de API de Gemini para habilitar las correcciones
+                inteligentes.</p>
+            <div class="space-y-5">
+                <div>
+                    <label class="text-[10px] font-bold text-slate-500 uppercase mb-2 block">Gemini API Key</label>
+                    <input type="password" id="api-key-input"
+                        class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 outline-none focus:border-indigo-500 transition text-sm"
+                        placeholder="Introduce tu API Key aquí...">
+                </div>
+                <div>
+                    <label class="text-[10px] font-bold text-slate-500 uppercase mb-2 block">Modelo Gemini</label>
+                    <select id="model-select"
+                        class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 outline-none focus:border-indigo-500 transition text-sm text-slate-300">
+                        <option value="gemini-1.5-flash">Gemini 1.5 Flash (Recomendado)</option>
+                        <option value="gemini-1.5-pro">Gemini 1.5 Pro</option>
+                        <option value="gemini-2.0-flash">Gemini 2.0 Flash</option>
+                        <option value="gemini-2.5-flash">Gemini 2.5 Flash</option>
+                    </select>
+                    <p class="text-[9px] text-slate-600 mt-2">Prueba otro modelo si el actual da error de cuota.</p>
+                </div>
+                <div class="flex gap-3 pt-4">
+                    <button onclick="toggleSettings(false)"
+                        class="flex-1 py-3 text-slate-500 font-bold hover:text-white transition">Cancelar</button>
+                    <button onclick="saveApiKey()"
+                        class="flex-1 py-3 bg-indigo-600 rounded-xl font-bold hover:bg-indigo-500 transition shadow-lg">Guardar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+
+</body>
+
+</html>
