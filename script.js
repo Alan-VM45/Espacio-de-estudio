@@ -2,6 +2,9 @@
 let apiKey = (typeof CONFIG_API_KEY !== 'undefined' && CONFIG_API_KEY) ? CONFIG_API_KEY : (localStorage.getItem('gemini_api_key') || "");
 let activeModel = (typeof CONFIG_DEFAULT_MODEL !== 'undefined' && CONFIG_DEFAULT_MODEL) ? CONFIG_DEFAULT_MODEL : (localStorage.getItem('gemini_model') || "gemini-1.5-flash");
 
+console.log("Sistema cargado. API Key detectada:", apiKey ? "SÍ (config.js o localStorage)" : "NO");
+console.log("Modelo activo:", activeModel);
+
 // ESTADO GLOBAL
 let subjects = JSON.parse(localStorage.getItem('studyflow_v4_data')) || [
     { id: '1', title: 'Probabilidad y Estadística', type: 'math', topics: [{ name: 'Variables Aleatorias' }], files: [], repo: '' },
@@ -66,25 +69,15 @@ function toggleSettings(s) {
     modal.classList.toggle('hidden', !s);
     modal.classList.toggle('flex', s);
     if (s) {
-        document.getElementById('api-key-input').value = apiKey;
-        document.getElementById('model-select').value = activeModel;
+        document.getElementById('status-key').innerText = apiKey ? "DETECTADA" : "NO DETECTADA";
+        document.getElementById('status-key').className = apiKey ?
+            "text-[10px] bg-emerald-500/20 text-emerald-400 px-2 py-0.5 rounded" :
+            "text-[10px] bg-red-500/20 text-red-400 px-2 py-0.5 rounded";
+        document.getElementById('status-model').innerText = activeModel;
     }
 }
 
-function saveApiKey() {
-    const key = document.getElementById('api-key-input').value.trim();
-    const model = document.getElementById('model-select').value;
-    if (key) {
-        apiKey = key;
-        activeModel = model;
-        localStorage.setItem('gemini_api_key', key);
-        localStorage.setItem('gemini_model', model);
-        alert("Configuración guardada.");
-        toggleSettings(false);
-    } else {
-        alert("Introduce una API Key.");
-    }
-}
+// saveApiKey eliminada ya que la configuración es vía config.js ahora.
 
 function saveSubject() {
     const name = document.getElementById('subject-name').value;
@@ -237,8 +230,7 @@ async function reviewNotes() {
 
     if (!notes) return alert("Por favor escribe algo para corregir.");
     if (!apiKey) {
-        alert("Configura tu Gemini API Key en los ajustes (icono de engranaje) para usar esta función.");
-        toggleSettings(true);
+        resultArea.innerHTML = `<p class="text-amber-400 text-sm italic">Error: No se detectó ninguna API Key. Por favor verifícala en el archivo config.js.</p>`;
         return;
     }
 
