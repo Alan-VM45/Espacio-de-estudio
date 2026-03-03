@@ -1,6 +1,6 @@
-// API KEY & CONFIG (Loads from config.js or localStorage)
-let apiKey = (typeof CONFIG_API_KEY !== 'undefined' && CONFIG_API_KEY) ? CONFIG_API_KEY : (localStorage.getItem('gemini_api_key') || "");
-let activeModel = (typeof CONFIG_DEFAULT_MODEL !== 'undefined' && CONFIG_DEFAULT_MODEL) ? CONFIG_DEFAULT_MODEL : (localStorage.getItem('gemini_model') || "gemini-1.5-flash");
+// API KEY & CONFIG (Carga desde config.js o localStorage)
+let apiKey = (window.CONFIG_API_KEY) || (localStorage.getItem('gemini_api_key') || "");
+let activeModel = (window.CONFIG_DEFAULT_MODEL) || (localStorage.getItem('gemini_model') || "gemini-1.5-flash");
 
 console.log("Sistema cargado. API Key detectada:", apiKey ? "SÍ (config.js o localStorage)" : "NO");
 console.log("Modelo activo:", activeModel);
