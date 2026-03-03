@@ -1,5 +1,5 @@
 # Evitar subir la API Key
-config.js
+api-key.js
 
 # Otros archivos que podrías querer ignorar
 node_modules/
