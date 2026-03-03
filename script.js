@@ -1,6 +1,6 @@
-// API KEY & CONFIG (Loads from localStorage)
-let apiKey = localStorage.getItem('gemini_api_key') || "";
-let activeModel = localStorage.getItem('gemini_model') || "gemini-1.5-flash";
+// API KEY & CONFIG (Loads from config.js or localStorage)
+let apiKey = (typeof CONFIG_API_KEY !== 'undefined' && CONFIG_API_KEY) ? CONFIG_API_KEY : (localStorage.getItem('gemini_api_key') || "");
+let activeModel = (typeof CONFIG_DEFAULT_MODEL !== 'undefined' && CONFIG_DEFAULT_MODEL) ? CONFIG_DEFAULT_MODEL : (localStorage.getItem('gemini_model') || "gemini-1.5-flash");
 
 // ESTADO GLOBAL
 let subjects = JSON.parse(localStorage.getItem('studyflow_v4_data')) || [
