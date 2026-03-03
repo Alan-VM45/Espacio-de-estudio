@@ -1,5 +1,5 @@
 # Evitar subir la API Key
-api-key.js
+global-data.js
 
 
 # Otros archivos que podrías querer ignorar
