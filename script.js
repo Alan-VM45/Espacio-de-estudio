@@ -1,9 +1,6 @@
-// API KEY & CONFIG (Se cargan desde localStorage, inyectado por config.js)
+// API KEY & CONFIG (Se cargan desde localStorage, inyectado por setup-v100.js)
 let apiKey = localStorage.getItem('gemini_api_key') || "";
 let activeModel = localStorage.getItem('gemini_model') || "gemini-2.5-flash";
-
-console.log("Sistema cargado. API Key detectada:", apiKey ? "SÍ" : "NO");
-console.log("Modelo activo:", activeModel);
 
 // ESTADO GLOBAL
 let subjects = JSON.parse(localStorage.getItem('studyflow_v4_data')) || [
