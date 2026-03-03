@@ -1,2 +1,2 @@
 # Espacio-de-estudio
-pagfina para tener tus apuntes, pdfs para poder estudiar 
+pagina para tener tus apuntes, pdfs para poder estudiar 
