@@ -2,7 +2,8 @@
 let apiKey = (window.CONFIG_API_KEY) || (localStorage.getItem('gemini_api_key') || "");
 let activeModel = (window.CONFIG_DEFAULT_MODEL) || (localStorage.getItem('gemini_model') || "gemini-1.5-flash");
 
-console.log("Sistema cargado. API Key detectada:", apiKey ? "SÍ (config.js o localStorage)" : "NO");
+console.log("¿Archivo config.js cargado?:", (typeof CONFIG_LOADED !== 'undefined') ? "SÍ" : "NO (Revisa que el archivo esté en la misma carpeta)");
+console.log("API Key detectada:", apiKey ? "SÍ" : "NO");
 console.log("Modelo activo:", activeModel);
 
 // ESTADO GLOBAL
@@ -223,6 +224,14 @@ function setActiveTopic(idx) {
 
 // IA CORRECTION LOGIC
 async function reviewNotes() {
+    // Actualizar apiKey dinámicamente desde el archivo de configuración si no está seteada
+    if (!apiKey) {
+        apiKey = (window.CONFIG_API_KEY) || (typeof CONFIG_API_KEY !== 'undefined' ? CONFIG_API_KEY : "") || localStorage.getItem('gemini_api_key') || "";
+    }
+    if (!activeModel) {
+        activeModel = (window.CONFIG_DEFAULT_MODEL) || (typeof CONFIG_DEFAULT_MODEL !== 'undefined' ? CONFIG_DEFAULT_MODEL : "") || localStorage.getItem('gemini_model') || "gemini-2.5-flash";
+    }
+
     const notes = document.getElementById('notes-area').value;
     const resultArea = document.getElementById('ai-review-result');
     const s = subjects.find(sub => sub.id === activeId);
@@ -230,7 +239,7 @@ async function reviewNotes() {
 
     if (!notes) return alert("Por favor escribe algo para corregir.");
     if (!apiKey) {
-        resultArea.innerHTML = `<p class="text-amber-400 text-sm italic">Error: No se detectó ninguna API Key. Por favor verifícala en el archivo config.js.</p>`;
+        resultArea.innerHTML = `<p class="text-amber-400 text-sm italic">Error: No se detectó ninguna API Key. Por favor verifícala en el archivo config.js y asegúrate de haberlo guardado.</p>`;
         return;
     }
 
